@@ -1,20 +1,8 @@
 #include <unordered_map>
 #include <vector>
+#include <unordered_set>
 #include <algorithm>
-
-/*
-- necessary graph functions:
-    - add edge
-    - remove edge
-    - add node (manually)
-    - remove node (and all associated edges)
-    - are two nodes neighbors
-- some implementation details:
-    - nodes will be integers, weights will also be integers
-    - negative weights will be allowed
-    - different graph algorithms will be class methods
-    - graph is directed AND weighted
-*/
+#include <utility>
 
 struct Edge {
     int dest;
@@ -25,14 +13,14 @@ struct Edge {
 class Graph {
     private:
     // int -> vector<Edge> for mapping a vertex to a list of edges
-    std::unordered_map<int, std::vector<Edge>> adjacencyList;
+    std::unordered_map<int, std::vector<Edge>> mapList;
     bool negativeWeights;
 
     public:
 
     // insert/remove functions
-    void insertEdge(int source, int dest, int weight); // insert edge from origin to dest with weight
-    void insertVertex(int vert); // initialized vertex with empty list
+    bool insertEdge(int source, int dest, int weight); // insert edge from origin to dest with weight
+    bool insertVertex(int vert); // initialized vertex with empty list
     void removeVertex(int vert); // remove vertex and associated edge list
     void removeEdge(int source, int dest); // removes edge associated with origin and dest
     void changeWeight(int source, int dest, int weight); // changes weight associated with the edge between origin and dest
@@ -47,8 +35,8 @@ class Graph {
 
 
     // algorithms
-    std::vector<std::pair<int, int>> Dijkstras(int source);
-    std::vector<std::pair<int, int>> AStar(int source);
-    std::vector<std::pair<int, int>> BellmanFord(int source);
-    std::unordered_map<int, std::pair<int, int>> FloydWarshall(); // returns all shortest paths
+    std::vector<Edge> Dijkstras(int source);
+    std::vector<Edge> AStar(int source);
+    std::vector<Edge> BellmanFord(int source);
+    std::unordered_map<int, std::vector<Edge>> FloydWarshall(); // returns all shortest paths
 };

@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <utility>
+#include <iostream>
 
 struct Edge {
     int dest;
@@ -14,10 +15,9 @@ class Graph {
     private:
     // int -> vector<Edge> for mapping a vertex to a list of edges
     std::unordered_map<int, std::vector<Edge>> mapList;
-    bool negativeWeights;
+    bool negativeWeights; 
 
     public:
-
     // insert/remove functions
     bool insertEdge(int source, int dest, int weight); // insert edge from origin to dest with weight
     bool insertVertex(int vert); // initialized vertex with empty list
@@ -32,6 +32,7 @@ class Graph {
     void disableNegativeWeights(); // disable/enable negative weights within GUI
     // if negative weights are present when negative weights are disabled, they will all be set to abs(weight)
     void enableNegativeWeights(); // if negative weights are enabled, only bellman-ford and floyd-warshall can be used
+    void printGraph(); //for debugging purposes
 
 
     // algorithms

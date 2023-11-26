@@ -1,9 +1,11 @@
 #include "graph.h"
 
-
 bool Graph::insertEdge(int source, int dest, int weight) {
     // prevent source == dest
     if(source == dest) return false;
+
+    //check for negative
+    if(!negativeWeights && weight < 0) return false;
 
     // prevent duplicate edges in the same direction, dest == e.dest already in neighbors, to overwrite weight use changeWeight
     std::vector<Edge> n = mapList[source];
@@ -42,19 +44,29 @@ void Graph::removeVertex(int vert) {
 }
 
 void Graph::removeEdge(int source, int dest) {
-
+    mapList[source].erase(
+        std::remove_if(
+            mapList[source].begin(),
+            mapList[source].end(),
+            [dest](Edge& e){return e.dest == dest;}
+        )
+    );
 }
 
 void Graph::changeWeight(int source, int dest, int weight) {
-
+    for(auto i : mapList[source]) {
+        if(i.dest == dest) i.weight = weight;
+    }
 }
 
 int Graph::vertexCount() {
-    return 0;
+    return mapList.size();
 }
 
 int Graph::edgeCount() {
-    return 0;
+    int count = 0;
+    for(auto v : mapList) count += v.second.size();
+    return count;
 }
 
 std::vector<Edge> Graph::neighbors(int vertex) {
@@ -62,11 +74,28 @@ std::vector<Edge> Graph::neighbors(int vertex) {
 }
 
 void Graph::disableNegativeWeights() {
-
+    negativeWeights = false;
+    for(auto v : mapList) {
+        for(int i = 0; i < v.second.size(); i++) {
+            int a = v.second[i].weight;
+            v.second[i].weight *= (a > 0) - (a < 0);
+            // hacky abs so i dont have to import math
+        }
+    }
 }
 
 void Graph::enableNegativeWeights() {
+    negativeWeights = true;
+}
 
+void Graph::printGraph() {
+    // print vertex, then each edge + weight
+    for(auto v : mapList) {
+        std::cout << "vertex: " << v.first << std::endl;
+        for(auto el : v.second) {
+            std::cout << "(" << el.dest << ", " << el.weight << ") " << std::endl;
+        }
+    }
 }
 
 std::vector<Edge> Graph::Dijkstras(int source) {

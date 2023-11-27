@@ -1,3 +1,4 @@
 .vscode
 build/
-src/graph_api/test/catch.hpp
+src/graph_api/build
+src/graph_test

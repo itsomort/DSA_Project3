@@ -9,7 +9,7 @@ bool Graph::insertEdge(int source, int dest, int weight) {
 
     // prevent duplicate edges in the same direction, dest == e.dest already in neighbors, to overwrite weight use changeWeight
     std::vector<Edge> n = mapList[source];
-    auto it = std::find_if(n.begin(), n.end(), [&dest](const Edge& e) {e.dest == dest;}); 
+    auto it = std::find_if(n.begin(), n.end(), [&dest](const Edge& e) {return e.dest == dest;}); 
 
     // insert mapList[dest] just in case
     insertVertex(dest);
@@ -32,7 +32,7 @@ bool Graph::insertVertex(int vert) {
 // remove vertex and all edges associated with it
 void Graph::removeVertex(int vert) {
     mapList.erase(vert);
-    for(auto it : mapList) {
+    for(auto& it : mapList) {
         // i swear this looks suspicious but it works :^)
         std::vector<Edge>& vec = it.second;
         vec.erase(
@@ -54,7 +54,7 @@ void Graph::removeEdge(int source, int dest) {
 }
 
 void Graph::changeWeight(int source, int dest, int weight) {
-    for(auto i : mapList[source]) {
+    for(auto& i : mapList[source]) {
         if(i.dest == dest) i.weight = weight;
     }
 }
@@ -75,7 +75,7 @@ std::vector<Edge> Graph::neighbors(int vertex) {
 
 void Graph::disableNegativeWeights() {
     negativeWeights = false;
-    for(auto v : mapList) {
+    for(auto& v : mapList) {
         for(int i = 0; i < v.second.size(); i++) {
             int a = v.second[i].weight;
             v.second[i].weight *= (a > 0) - (a < 0);
@@ -95,21 +95,22 @@ void Graph::printGraph() {
         for(auto el : v.second) {
             std::cout << "(" << el.dest << ", " << el.weight << ") " << std::endl;
         }
+        std::cout << std::endl;
     }
 }
 
-std::vector<Edge> Graph::Dijkstras(int source) {
+// std::vector<Edge> Graph::Dijkstras(int source) {
 
-}
+// }
 
-std::vector<Edge> Graph::AStar(int source) {
+// std::vector<Edge> Graph::AStar(int source) {
 
-}
+// }
 
-std::vector<Edge> Graph::BellmanFord(int source) {
+// std::vector<Edge> Graph::BellmanFord(int source) {
 
-}
+// }
 
-std::unordered_map<int, std::vector<Edge>> Graph::FloydWarshall() {
+// std::unordered_map<int, std::vector<Edge>> Graph::FloydWarshall() {
 
-}
+// }

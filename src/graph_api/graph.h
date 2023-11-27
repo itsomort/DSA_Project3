@@ -8,7 +8,7 @@
 struct Edge {
     int dest;
     int weight;
-    Edge::Edge(int d, int w) : dest(d), weight(w) {};
+    Edge(int d, int w) : dest(d), weight(w) {};
 };
 
 class Graph {

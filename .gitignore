@@ -1,4 +1,3 @@
 .vscode
-build/
-src/graph_api/build
-src/graph_test
+project3
+*.o

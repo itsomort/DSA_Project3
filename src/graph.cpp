@@ -14,14 +14,16 @@ bool Graph::insertEdge(int source, int dest, int weight) {
     auto it = std::find_if(n.begin(), n.end(),
         [&dest](const Edge& e) { return e.dest == dest; }
         );
-    if (it != n.end())
-        return false;
 
     // not found, so insert
     // insert mapList[dest] just in case
-    insertVertex(dest);
-    mapList[source].push_back(Edge(dest, weight));
-    return true;
+
+    if (it == n.end()) {
+        mapList[source].push_back(Edge(dest, weight));
+        return true;
+    }
+    return false;
+
 }
 
 // if uninitialized or null, creates vector, returns true
@@ -60,6 +62,8 @@ void Graph::changeWeight(int source, int dest, int weight) {
     }
 }
 
+// TODO: fix so that way vertices without edges coming out of them are still counted
+// maybe make a set with all seen vertices and return the size of that
 int Graph::vertexCount() {
     return mapList.size();
 }
@@ -123,8 +127,8 @@ void Graph::generateGraph() {
     srand(time(NULL));
 
     for (int i = 0; i < 350; i++) {
-        for (int j = 0; i < 350; j++) {
-            insertEdge(i, j, rand() % 1000 - 1000);
+        for (int j = 0; j < 350; j++) {
+            insertEdge(i, j, rand() % 1000 + 1);
         }
     }
 }

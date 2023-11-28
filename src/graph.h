@@ -34,7 +34,7 @@ class Graph {
     void enableNegativeWeights(); // if negative weights are enabled, only bellman-ford and floyd-warshall can be used
 
     void printGraph(); //for debugging purposes
-    void generateGraph(int numVertices, int numEdges);
+    void generateGraph();
 
 
     // algorithms
@@ -44,4 +44,4 @@ class Graph {
     std::unordered_map<int, std::vector<Edge>> FloydWarshall(); // returns all shortest paths
 };
 
-// vim: et:sts=4:tw=4:
+// vim: et:sts=4:sw=4:

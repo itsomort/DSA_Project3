@@ -124,7 +124,7 @@ void Graph::generateGraph() {
 
     for (int i = 0; i < 350; i++) {
         for (int j = 0; i < 350; j++) {
-            insertEdge(i, j, rand() % 1000 - 1000)
+            insertEdge(i, j, rand() % 1000 - 1000);
         }
     }
 }

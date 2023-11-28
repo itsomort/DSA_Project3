@@ -1,24 +1,16 @@
-.POSIX:
-
-### Constants
 CXX = clang++
 CXXFLAGS = -Wpedantic -Wall
-CLI_OUT = project3
+ODOR = build
+OUT = project3
 SRCDIR = src
-###
 
-.PHONY: pre_all
-pre_all:
-	$(MAKE) -C $(SRCDIR) all
+.PHONY: clean
 
-all: graph.o parse.o main.o
-	$(CXX) $(LDFLAGS) -o project3 graph.o parse.o main.o
+all: build/graph.o build/parse.o build/main.o
+	$(CXX) $(LDFLAGS) -o project3 build/graph.o build/parse.o build/main.o
 
-graph.o: graph.cpp graph.h
-parse.o: parse.cpp parse.h
-main.o: main.cpp
+build/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-.SUFFIXES:
-.SUFFIXES: .cpp .o
-.cpp.o:
-	$(CXX) $(CXXFLAGS) -c $<
+clean:
+	rm -rf $(ODIR)/*.o project3

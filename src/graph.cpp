@@ -55,6 +55,10 @@ void Graph::removeEdge(int source, int dest) {
     );
 }
 
+void Graph::clear() {
+    mapList.clear();
+}
+
 void Graph::changeWeight(int source, int dest, int weight) {
     for (auto& i : mapList[source]) {
         if (i.dest == dest)
@@ -123,11 +127,13 @@ void Graph::printGraph() {
 
 // generate a fully connected 350 vertex graph, with random weights for each
 // edge. this represents our 100k+ datapoints.
-void Graph::generateGraph() {
+void Graph::generateGraph(int num) {
     srand(time(NULL));
 
-    for (int i = 0; i < 350; i++) {
-        for (int j = 0; j < 350; j++) {
+    clear(); // so previous nodes don't affect
+
+    for (int i = 0; i < num; i++) {
+        for (int j = 0; j < num; j++) {
             insertEdge(i, j, rand() % 1000 + 1);
         }
     }

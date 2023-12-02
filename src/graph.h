@@ -39,7 +39,7 @@ class Graph {
 
 
     // algorithms
-    std::vector<Edge> Dijkstras(int source);
+    std::vector<std::pair<Edge, int>> Dijkstras(int source);
     std::vector<Edge> AStar(int source);
     std::vector<Edge> BellmanFord(int source);
     std::unordered_map<int, std::vector<Edge>> FloydWarshall(); // returns all shortest paths

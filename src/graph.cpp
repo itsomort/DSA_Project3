@@ -105,6 +105,17 @@ void Graph::printGraph() {
     }
 }
 
+int Graph::areNeighbors(int source, int dest) { //detects if there is an edge between source and destination, returns -1 if no such edge exists, otherwise it returns the index of dest for the source vector
+    auto vertexNeighbors = neighbors(source);
+
+    for (int i = 0; i < vertexNeighbors.size(); i++) {
+        if (vertexNeighbors.at(i).dest == dest) {
+            return i;
+        }
+    }
+    return -1; 
+}
+
 std::vector<Edge> Graph::Dijkstras(int source) { //performs Dijkstras algorithm in n^2 time starting from a source node
     std::vector<Edge> shortestPath; //will store the shortest path 
     int const numVertices = vertexCount();

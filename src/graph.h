@@ -32,6 +32,7 @@ class Graph {
     void disableNegativeWeights(); // disable/enable negative weights within GUI
     // if negative weights are present when negative weights are disabled, they will all be set to abs(weight)
     void enableNegativeWeights(); // if negative weights are enabled, only bellman-ford and floyd-warshall can be used
+    int areNeighbors(int source, int dest); //method that checks if two vertices are neighbors
 
     void printGraph(); //for debugging purposes
     void generateGraph();

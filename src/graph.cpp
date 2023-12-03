@@ -1,3 +1,11 @@
+#include <algorithm>
+#include <climits>
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 #include "graph.h"
 
 bool Graph::insertEdge(int source, int dest, int weight) {
@@ -23,7 +31,6 @@ bool Graph::insertEdge(int source, int dest, int weight) {
         return true;
     }
     return false;
-
 }
 
 // if uninitialized or null, creates vector, returns true
@@ -105,7 +112,9 @@ void Graph::printGraph() {
     }
 }
 
-int Graph::areNeighbors(int source, int dest) { //detects if there is an edge between source and destination, returns -1 if no such edge exists, otherwise it returns the index of dest for the source vector
+// detects if there is an edge between source and destination
+// returns -1 if no such edge exists, otherwise it returns the index of dest for the source vector
+int Graph::areNeighbors(int source, int dest) {
     auto vertexNeighbors = neighbors(source);
 
     for (int i = 0; i < vertexNeighbors.size(); i++) {
@@ -113,50 +122,56 @@ int Graph::areNeighbors(int source, int dest) { //detects if there is an edge be
             return i;
         }
     }
-    return -1; 
+    return -1;
 }
 
-std::vector<std::pair<Edge, int>> Graph::Dijkstras(int source) { //performs Dijkstras algorithm in n^2 time starting from a source node
-    std::vector<std::pair<Edge, int>> shortestPath; //will store the shortest path 
+// performs Dijkstras algorithm in n^2 time starting from a source node
+std::unordered_map<int, std::pair<int, int>> Graph::Dijkstras(int source) {
     int const numVertices = vertexCount();
 
-    int distance[350]; //will hold the shortest distance from source to the last node
-    bool shortestSet[350]; //shortestSet[vertex] will be true if it is included in the shortest path to the final node
-
-    for (int i = 0; i < numVertices; i++) { //goes through all the vertices, sets all of their distances to infinite and makes all nodes not included in the shortest path
-        distance[i] = INT_MAX;
-        shortestSet[i] = false;
+    if (source > numVertices) {
+        source = mapList.begin()->first;
+        std::cout << "Vertex does not exist in graph, defaulting to vertex " << source << "\n";
     }
 
-    distance[source] = 0; //sets distance of source to zero since we start there
-    int minIndex;
+    // first: distance from source; second: predecessor vertex
+    std::unordered_map<int, std::pair<int, int>> outContainer;
+    std::unordered_set<int> toProcess;
 
-    for (int i = 0; i < numVertices - 1; i++) { 
-        int minDistance = INT_MAX; //sets the minDistance of each vertex to infinity
-        minIndex = INT_MAX; //sets the minIndex to be infinity
-
-        for (int j = 0; j < numVertices; j++) { 
-            if (shortestSet[j] == false && distance[j] <= minDistance) { //if we find a vertex that is not already part of the path and the distance it has from source is smaller than the current smallest distance, update minIndex and minDistance
-                minDistance = distance[j];
-                minIndex = j;
-            }
-        }
-
-        shortestSet[minIndex] = true; //says that the minIndex will automatically be part of the path
-        
-
-        for (int j = 0; j < numVertices; j++) { //constructs the shortest path
-            //if the node is not already part of the path, if the vertices are neighbors, if the distance of minIndex is not infinity, and if the distance currently stored is greater than the distance from minIndex plus the weight of this connection, add to shortest path
-            if (!shortestSet[j] && areNeighbors(minIndex, j) != -1 && distance[minIndex] != INT_MAX && distance[minIndex] + mapList[minIndex].at(areNeighbors(minIndex, j)).weight < distance[j]) {
-                shortestPath.push_back(std::make_pair(mapList[minIndex].at(areNeighbors(minIndex, j)), minDistance));
-            }
-        }
-
+    // initialization, INT_MAX represents infinity | N/A
+    for (auto it = mapList.begin(); it != mapList.end(); it++) {
+        outContainer.insert(std::make_pair(it->first, std::make_pair(INT_MAX, INT_MAX)));
+        toProcess.insert(it->first);
     }
 
-    return shortestPath; //returns the vector storing the shortest path edges
+    // sets distance of source to zero since we start there
+    outContainer[source].first = 0;
 
+    int cur = source;
+    int tmpWeight;
+    int tmpNext;
+    int tmpNextWeight;
 
+    while (!toProcess.empty()) {
+        tmpNextWeight = INT_MAX;
+        for (auto edge : mapList[cur]) {
+            tmpWeight = outContainer[cur].first + edge.weight;
+            if (tmpWeight < outContainer[edge.dest].first) {
+                outContainer[edge.dest].first = tmpWeight;
+                outContainer[edge.dest].second = cur;
+            }
+
+            // if new weight is less than least seen unprocessed weight, make it next
+            if (edge.weight < tmpNextWeight && toProcess.find(edge.dest) != toProcess.end()) {
+                tmpNext = edge.dest;
+                tmpNextWeight = edge.weight;
+            }
+        }
+        toProcess.erase(cur);
+        cur = tmpNext;
+    }
+
+    return outContainer;
 }
 
 // std::vector<Edge> Graph::AStar(int source) {

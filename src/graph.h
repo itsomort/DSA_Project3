@@ -1,9 +1,6 @@
 #include <unordered_map>
 #include <vector>
-#include <unordered_set>
-#include <algorithm>
 #include <utility>
-#include <iostream>
 
 struct Edge {
     int dest;
@@ -39,7 +36,7 @@ class Graph {
 
 
     // algorithms
-    std::vector<std::pair<Edge, int>> Dijkstras(int source);
+    std::unordered_map<int, std::pair<int, int>> Dijkstras(int source);
     std::vector<Edge> AStar(int source);
     std::vector<Edge> BellmanFord(int source);
     std::unordered_map<int, std::vector<Edge>> FloydWarshall(); // returns all shortest paths

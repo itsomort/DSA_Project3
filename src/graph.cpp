@@ -261,7 +261,7 @@ std::unordered_map<int, std::unordered_map<int, int>> Graph::FloydWarshall() {
 
 // generate a fully connected 350 vertex graph, with random weights for each
 // edge. this represents our 100k+ datapoints.
-void Graph::generateGraph(int num, int seed) {
+void Graph::generateGraph(int num) {
     srand(time(NULL));
 
     clear(); // so previous nodes don't affect

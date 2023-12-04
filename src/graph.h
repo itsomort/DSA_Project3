@@ -35,12 +35,10 @@ class Graph {
     void printGraph(); //for debugging purposes
     void generateGraph(int num); // num to allow for custom connected graphs
 
-
     // algorithms
     std::unordered_map<int, std::pair<int, int>> Dijkstras(int source);
-    std::vector<Edge> AStar(int source);
-    std::vector<Edge> BellmanFord(int source);
-    std::unordered_map<int, std::vector<Edge>> FloydWarshall(); // returns all shortest paths
+    std::unordered_map<int, std::pair<int, int>> BellmanFord(int source);
+    std::unordered_map<int, std::unordered_map<int, int>> FloydWarshall(); // returns all shortest paths
 };
 
 // vim: et:sts=4:sw=4:

@@ -1,6 +1,7 @@
 #include "parse.h"
 #include <sstream>
 #include <regex>
+#include <iostream>
 
 #define ISNUM std::regex("/^[0-9]+$")
 #define FAIL_ARGUMENTS "Wrong number of arguments. Correct usage: "

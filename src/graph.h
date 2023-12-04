@@ -21,6 +21,7 @@ class Graph {
     void removeVertex(int vert); // remove vertex and associated edge list
     void removeEdge(int source, int dest); // removes edge associated with origin and dest
     void changeWeight(int source, int dest, int weight); // changes weight associated with the edge between origin and dest
+    void clear(); // completely clears graph
     
     // utility functions
     int vertexCount(); // number of vertices
@@ -32,7 +33,7 @@ class Graph {
     int areNeighbors(int source, int dest); //method that checks if two vertices are neighbors
 
     void printGraph(); //for debugging purposes
-    void generateGraph();
+    void generateGraph(int num); // num to allow for custom connected graphs
 
 
     // algorithms

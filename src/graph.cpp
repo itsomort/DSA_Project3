@@ -25,6 +25,7 @@ bool Graph::insertEdge(int source, int dest, int weight) {
 
     // not found, so insert
     // insert mapList[dest] just in case
+    insertVertex(dest);
 
     if (it == n.end()) {
         mapList[source].push_back(Edge(dest, weight));
@@ -133,11 +134,6 @@ int Graph::areNeighbors(int source, int dest) {
 std::unordered_map<int, std::pair<int, int>> Graph::Dijkstras(int source) {
     int const numVertices = vertexCount();
 
-    if (source > numVertices) {
-        source = mapList.begin()->first;
-        std::cout << "Vertex does not exist in graph, defaulting to vertex " << source << "\n";
-    }
-
     // first: distance from source; second: predecessor vertex
     std::unordered_map<int, std::pair<int, int>> outContainer;
     std::unordered_set<int> toProcess;
@@ -147,9 +143,19 @@ std::unordered_map<int, std::pair<int, int>> Graph::Dijkstras(int source) {
         outContainer.insert(std::make_pair(it->first, std::make_pair(INT_MAX, INT_MAX)));
         toProcess.insert(it->first);
     }
-
-    // sets distance of source to zero since we start there
+    // we start at the source
     outContainer[source].first = 0;
+
+    // sanity checks
+    if (negativeWeights) {
+        std::cout << "Dijkstra's Algorithm can not be used with negative weights.\n";
+        return outContainer;
+    }
+
+    if (source > numVertices) {
+        source = mapList.begin()->first;
+        std::cout << "Vertex does not exist in graph, defaulting to vertex " << source << "\n";
+    }
 
     int cur = source;
     int tmpWeight;
@@ -164,35 +170,98 @@ std::unordered_map<int, std::pair<int, int>> Graph::Dijkstras(int source) {
                 outContainer[edge.dest].first = tmpWeight;
                 outContainer[edge.dest].second = cur;
             }
-
-            // if new weight is less than least seen unprocessed weight, make it next
-            if (edge.weight < tmpNextWeight && toProcess.find(edge.dest) != toProcess.end()) {
-                tmpNext = edge.dest;
-                tmpNextWeight = edge.weight;
-            }
         }
         toProcess.erase(cur);
+
+        // find smallest d[v] that still needs processing and set it as next
+        for (auto it = toProcess.begin(); it != toProcess.end(); it++) {
+            if (outContainer[*it].first < tmpNextWeight) {
+                tmpNext = *it;
+                tmpNextWeight = outContainer[*it].first;
+            }
+        }
+
         cur = tmpNext;
     }
 
     return outContainer;
 }
 
-// std::vector<Edge> Graph::AStar(int source) {
+std::unordered_map<int, std::pair<int, int>> Graph::BellmanFord(int source) {
+    int const numVertices = vertexCount();
+    std::unordered_map<int, std::pair<int, int>> outContainer;
 
-// }
+    // initialization, INT_MAX represents infinity | N/A
+    for (auto it = mapList.begin(); it != mapList.end(); it++) {
+        outContainer.insert(std::make_pair(it->first, std::make_pair(INT_MAX, INT_MAX)));
+    }
+    // we start at the source
+    outContainer[source].first = 0;
 
-// std::vector<Edge> Graph::BellmanFord(int source) {
+    // sanity check
+    if (source > numVertices) {
+        source = mapList.begin()->first;
+        std::cout << "Vertex does not exist in graph, defaulting to vertex " << source << "\n";
+    }
 
-// }
+    // relax all edges immediately
+    for (auto _tmp : mapList) {
+        for (auto v : mapList) {
+            for (auto e : v.second) {
+                if (outContainer[v.first].first != INT_MAX &&
+                        outContainer[v.first].first + e.weight < outContainer[e.dest].first) {
+                    outContainer[e.dest].first = outContainer[v.first].first + e.weight;
+                    outContainer[e.dest].second = v.first;
+                }
+            }
+        }
+    }
 
-// std::unordered_map<int, std::vector<Edge>> Graph::FloydWarshall() {
+    // final iteration for detecting negative cycle
+    for (auto v : mapList) {
+        for (auto e : v.second) {
+            if (outContainer[v.first].first + e.weight < outContainer[e.dest].first) {
+                // a negative cycle exists
+                std::cout << "Warning: Graph contains a negative cycle. Unbounded Shortest Path Exists.\n";
+            }
+        }
+    }
 
-// }
+    return outContainer;
+}
+
+std::unordered_map<int, std::unordered_map<int, int>> Graph::FloydWarshall() {
+    std::unordered_map<int, std::unordered_map<int, int>> dist;
+
+    for (auto v : mapList) {
+        for (auto v2 : mapList) {
+            dist[v.first][v2.first] = INT_MAX;
+        }
+    }
+
+    for (auto v : mapList) {
+        for (auto e : v.second) {
+            dist[v.first][e.dest] = e.weight;
+        }
+        dist[v.first][v.first] = 0;
+    }
+
+    for (auto v1 : mapList) {
+        for (auto v2 : mapList) {
+            for (auto v3 : mapList) {
+                if (dist[v2.first][v3.first] > dist[v2.first][v1.first] + dist[v1.first][v3.first]) {
+                    dist[v2.first][v3.first] = dist[v2.first][v1.first] + dist[v1.first][v3.first];
+                }
+            }
+        }
+    }
+
+    return dist;
+}
 
 // generate a fully connected 350 vertex graph, with random weights for each
 // edge. this represents our 100k+ datapoints.
-void Graph::generateGraph(int num) {
+void Graph::generateGraph(int num, int seed) {
     srand(time(NULL));
 
     clear(); // so previous nodes don't affect

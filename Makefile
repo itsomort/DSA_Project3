@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -Wpedantic -Wall
+CXXFLAGS = -Wpedantic -Wall -std=c++14
 ODOR = build
 OUT = project3
 SRCDIR = src
